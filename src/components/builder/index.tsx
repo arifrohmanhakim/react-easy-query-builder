@@ -3,7 +3,7 @@ import { Layout, Typography, Row, Col, Space, Button } from 'antd';
 import { BuilderProps, ConditionalItemProps } from '../../types/builderTypes';
 import { Plus } from 'react-feather';
 import _ from 'lodash';
-import './builder.scss';
+import '../../assets/scss/main.scss';
 import ItemBuilder from './item';
 import ToolbarBuilder from './toolbar';
 

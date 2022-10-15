@@ -10,11 +10,11 @@ export default function ItemBuilder(props: any) {
         <div className="conditions-item">
             <div className="container">
                 <div className='field actions'>
-                    <Button type='text' icon={<Menu size={18} color="#ccc" />} />
+                    <Button type='text' icon={<Menu size={18} color="#ccc" />} className="btn-drag" />
                 </div>
                 <div className='field'>
                     {options?.showLabel && <label>Field</label>}
-                    <Select value={item?.field}>
+                    <Select value={item?.field} bordered={false}>
                         {_.map(fields, field => (
                             <Option value={field?.key}>{field?.label}</Option>
                         ))}
@@ -22,16 +22,16 @@ export default function ItemBuilder(props: any) {
                 </div>
                 <div className='field'>
                     {options?.showLabel && <label>Operator</label>}
-                    <Select value={item?.operator}>
+                    <Select value={item?.operator} bordered={false}>
                         <Option value="=">==</Option>
                         <Option value="!=">!=</Option>
                     </Select>
                 </div>
                 <div className='field'>
                     {options?.showLabel && <label>Value</label>}
-                    <Input />
+                    <Input bordered={false} placeholder="Value" />
                 </div>
-                <div className='field actions'>
+                <div className='field actions hide'>
                     <Tooltip title="Duplicate">
                         <Button type='text' icon={<Copy size={20} />} />
                     </Tooltip>
