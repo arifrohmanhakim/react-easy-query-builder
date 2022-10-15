@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { Layout, Typography, Row, Col, Space, Button } from 'antd';
 import { BuilderProps, ConditionalItemProps } from '../../types/builderTypes';
 import { Plus } from 'react-feather';
@@ -6,31 +6,43 @@ import _ from 'lodash';
 import '../../assets/scss/main.scss';
 import ItemBuilder from './item';
 import ToolbarBuilder from './toolbar';
+import { currentQuery as recoilCurrentQuery } from '../../models/state';
+import { useRecoilState } from 'recoil';
 
 const { Content } = Layout;
 export default function Builder(props: BuilderProps) {
     const { query, fields, options } = props;
+    const [currentQuery, setCurrentQuery] = useRecoilState(recoilCurrentQuery);
+
+    useEffect(() => {
+        setCurrentQuery(query)
+    }, [])
 
     /**
      * display conditional items
      */
-    const conditional = useCallback((items: any, first = false) => {
+    const conditional = useCallback((items: any, first = false, position: string = '') => {
         return (
             <>
-                {_.map(items, (val, key) => (
-                    <div style={{ marginTop: first ? 0 : 14 }} key={key}>
-                        <Row align='stretch' justify='space-between' className={`parent-conditions ${first ? 'first' : ''}`}>
-                            <Col>
-                                <ToolbarBuilder type={key} />
-                            </Col>
-                            <Col className={`wrap-item`}>
-                                {_.map(val, (item: ConditionalItemProps) => !_.isNil(item?.or) || !_.isNil(item?.and) ? conditional(item) : (
-                                    <ItemBuilder item={item} fields={fields} options={options} />
-                                ))}
-                            </Col>
-                        </Row>
-                    </div>
-                ))}
+                {_.map(items, (val, key) => {
+                    // eslint-disable-next-line react-hooks/exhaustive-deps
+                    position += first ? '' : '.'
+                    position += `${key}`
+                    return (
+                        <div style={{ marginTop: first ? 0 : 14 }} key={position}>
+                            <Row align='stretch' justify='space-between' className={`parent-conditions ${first ? 'first' : ''}`}>
+                                <Col>
+                                    <ToolbarBuilder type={key} position={position} />
+                                </Col>
+                                <Col className={`wrap-item`}>
+                                    {_.map(val, (item: ConditionalItemProps, index) => !_.isNil(item?.or) || !_.isNil(item?.and) ? conditional(item, false, `${position}[${index}]`) : (
+                                        <ItemBuilder item={item} fields={fields} options={options} />
+                                    ))}
+                                </Col>
+                            </Row>
+                        </div>
+                    )
+                })}
             </>
         )
     }, [fields, options])
@@ -49,10 +61,10 @@ export default function Builder(props: BuilderProps) {
                         </Space>
                     </Col>
                 </Row>
-                {_.isNil(query) ? null :
+                {_.isNil(currentQuery) ? null :
                     <Content>
                         <Space direction='vertical' size="large" style={{ width: '100%' }}>
-                            {conditional(query, true)}
+                            {conditional(currentQuery, true)}
                         </Space>
                     </Content>
                 }

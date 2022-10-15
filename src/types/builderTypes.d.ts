@@ -19,7 +19,7 @@ export interface OptionsProps {
 
 export interface BuilderProps {
   fields: Array<FieldsProps>;
-  query: Object | null;
+  query: any | null;
   onChange: (e: any) => void;
   options?: OptionsProps;
 }
