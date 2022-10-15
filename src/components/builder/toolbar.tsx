@@ -4,9 +4,10 @@ import { Plus, MoreHorizontal, Copy, Trash } from 'react-feather';
 import _ from 'lodash';
 import { currentQuery as recoilCurrentQuery } from '../../models/state';
 import { useRecoilState } from 'recoil';
+import { ConditionalItemProps } from '../../types/builderTypes';
 
 export default function ToolbarBuilder(props: any) {
-    const { type, position } = props;
+    const { type, position, isFirst = false } = props;
     const [currentQuery, setCurrentQuery] = useRecoilState(recoilCurrentQuery);
 
     /**
@@ -31,25 +32,106 @@ export default function ToolbarBuilder(props: any) {
 
         // update recoil
         setCurrentQuery(newQuery);
-    }, [currentQuery, type, position, setCurrentQuery])
+    }, [currentQuery, type, position, setCurrentQuery]);
 
+    /**
+     * handle on add new condition
+     */
+    const onAddCondition = useCallback(() => {
+        if (_.isNil(currentQuery)) return;
+        let newQuery = _.cloneDeep(currentQuery);
+        let currentValue: Array<ConditionalItemProps> = _.get(currentQuery, position);
+        currentValue = [...currentValue, {
+            field: 'gender',
+            operator: '=',
+            value: 'male'
+        }]
+        _.set(newQuery, position, currentValue)
+
+        // update recoil
+        setCurrentQuery(newQuery);
+    }, [currentQuery, position, setCurrentQuery])
+
+    /**
+     * handle on add new condition
+     */
+    const onAddGroup = useCallback(() => {
+        if (_.isNil(currentQuery)) return;
+        let newQuery = _.cloneDeep(currentQuery);
+        let currentValue: Array<ConditionalItemProps> = _.get(currentQuery, position);
+        currentValue = [...currentValue, {
+            and: [
+                {
+                    field: 'email',
+                    operator: '=',
+                    value: 'admin@admin.com'
+                }, {
+                    field: 'gender',
+                    operator: '=',
+                    value: 'male'
+                }
+            ]
+        }]
+        _.set(newQuery, position, currentValue)
+
+        // update recoil
+        setCurrentQuery(newQuery);
+    }, [currentQuery, position, setCurrentQuery])
+
+    /**
+     * handle on add new condition
+     */
+    const onDuplicate = useCallback(() => {
+        if (_.isNil(currentQuery)) return;
+        let newQuery = _.cloneDeep(currentQuery);
+        // split string position to array by .
+        let splitPositon = _.split(position, '.');
+        const lastType = _.last(splitPositon) || 'or';
+        const lastIndex = _.size(splitPositon) - 1;
+
+        // delete last index
+        _.pullAt(splitPositon, lastIndex)
+        const lastIndex2 = _.size(splitPositon) - 1;
+        const splitLastPosition = _.split(splitPositon[lastIndex2], '[')
+        _.pullAt(splitLastPosition, _.size(splitLastPosition) - 1);
+        _.pullAt(splitPositon, lastIndex2)
+        splitPositon.push(splitLastPosition[0]);
+
+
+        const currentValue: Array<ConditionalItemProps> = _.get(currentQuery, position);
+        let newValue: Array<ConditionalItemProps> = _.get(currentQuery, _.join(splitPositon, '.'));
+        newValue = [...newValue, { [lastType]: currentValue }];
+        _.set(newQuery, _.join(splitPositon, '.'), newValue)
+
+        // update recoil
+        setCurrentQuery(newQuery);
+
+    }, [currentQuery, position, setCurrentQuery])
+
+    /**
+     * menu add
+     */
     const addContent = useCallback(() => {
         return (
             <Menu>
-                <Menu.Item icon={<Plus size={18} />}>Condition</Menu.Item>
-                <Menu.Item icon={<Plus size={18} />}>Group</Menu.Item>
+                <Menu.Item icon={<Plus size={18} />} onClick={onAddCondition}>Condition</Menu.Item>
+                <Menu.Item icon={<Plus size={18} />} onClick={onAddGroup}>Group</Menu.Item>
             </Menu>
         )
-    }, []);
+    }, [onAddCondition, onAddGroup]);
 
+    /**
+     * menu more
+     */
     const moreContent = useCallback(() => {
         return (
             <Menu>
-                <Menu.Item icon={<Copy size={18} />}>Duplicate</Menu.Item>
+                {!isFirst &&
+                    <Menu.Item icon={<Copy size={18} />} onClick={onDuplicate}>Duplicate</Menu.Item>}
                 <Menu.Item icon={<Trash size={18} />} danger>Delete</Menu.Item>
             </Menu>
         )
-    }, []);
+    }, [onDuplicate, isFirst]);
 
     return (
         <Space direction='vertical' className={`conditions-toolbar ${type}`}>

@@ -1,7 +1,7 @@
 export interface ConditionalItemProps {
-  field: string;
-  operator: string;
-  value: any;
+  field?: string;
+  operator?: string;
+  value?: any;
   or?: any;
   and?: any;
 }

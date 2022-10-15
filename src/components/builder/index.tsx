@@ -32,7 +32,7 @@ export default function Builder(props: BuilderProps) {
                         <div style={{ marginTop: first ? 0 : 14 }} key={position}>
                             <Row align='stretch' justify='space-between' className={`parent-conditions ${first ? 'first' : ''}`}>
                                 <Col>
-                                    <ToolbarBuilder type={key} position={position} />
+                                    <ToolbarBuilder type={key} position={position} isFirst={first} />
                                 </Col>
                                 <Col className={`wrap-item`}>
                                     {_.map(val, (item: ConditionalItemProps, index) => !_.isNil(item?.or) || !_.isNil(item?.and) ? conditional(item, false, `${position}[${index}]`) : (
