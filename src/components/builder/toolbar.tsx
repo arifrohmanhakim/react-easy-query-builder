@@ -5,6 +5,7 @@ import _ from 'lodash';
 import { currentQuery as recoilCurrentQuery } from '../../models/state';
 import { useRecoilState } from 'recoil';
 import { ConditionalItemProps } from '../../types/builderTypes';
+import { removeEmptyObjects } from '../../utils/helpers';
 
 export default function ToolbarBuilder(props: any) {
     const { type, position, isFirst = false } = props;
@@ -109,6 +110,18 @@ export default function ToolbarBuilder(props: any) {
     }, [currentQuery, position, setCurrentQuery])
 
     /**
+     * handle on add new condition
+     */
+    const onDeleteGroup = useCallback(() => {
+        if (_.isNil(currentQuery)) return;
+        let newQuery = _.cloneDeep(currentQuery);
+        _.unset(newQuery, position)
+
+        // update recoil
+        setCurrentQuery(removeEmptyObjects(newQuery));
+    }, [currentQuery, position, setCurrentQuery])
+
+    /**
      * menu add
      */
     const addContent = useCallback(() => {
@@ -128,7 +141,7 @@ export default function ToolbarBuilder(props: any) {
             <Menu>
                 {!isFirst &&
                     <Menu.Item icon={<Copy size={18} />} onClick={onDuplicate}>Duplicate</Menu.Item>}
-                <Menu.Item icon={<Trash size={18} />} danger>Delete</Menu.Item>
+                <Menu.Item icon={<Trash size={18} />} danger onClick={onDeleteGroup}>Delete</Menu.Item>
             </Menu>
         )
     }, [onDuplicate, isFirst]);
