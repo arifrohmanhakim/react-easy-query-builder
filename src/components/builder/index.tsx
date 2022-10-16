@@ -14,6 +14,9 @@ export default function Builder(props: BuilderProps) {
     const { query, fields, options } = props;
     const [currentQuery, setCurrentQuery] = useRecoilState(recoilCurrentQuery);
 
+    console.log("currentQuery", currentQuery);
+
+
     useEffect(() => {
         setCurrentQuery(query)
     }, [])

@@ -9,7 +9,7 @@ export interface ConditionalItemProps {
 export interface FieldsProps {
   key: string;
   label: string;
-  type: "text" | "number" | "textarea" | "boolean" | "radio";
+  type: string | "text" | "number" | "textarea" | "boolean" | "radio";
   default?: any;
 }
 

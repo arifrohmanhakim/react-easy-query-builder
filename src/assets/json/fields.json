@@ -1,0 +1,13 @@
+[
+  {
+    "key": "email",
+    "label": "Email",
+    "type": "text"
+  },
+  {
+    "key": "gender",
+    "label": "Gender",
+    "type": "boolean",
+    "default": "Male"
+  }
+]

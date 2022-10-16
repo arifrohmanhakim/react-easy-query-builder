@@ -5,7 +5,7 @@ import _ from 'lodash';
 import { currentQuery as recoilCurrentQuery } from '../../models/state';
 import { useRecoilState } from 'recoil';
 import { ConditionalItemProps } from '../../types/builderTypes';
-import { removeEmptyObjects } from '../../utils/helpers';
+import { removeEmptyArrayObject } from '../../utils/helpers';
 
 export default function ToolbarBuilder(props: any) {
     const { type, position, isFirst = false } = props;
@@ -42,6 +42,10 @@ export default function ToolbarBuilder(props: any) {
         if (_.isNil(currentQuery)) return;
         let newQuery = _.cloneDeep(currentQuery);
         let currentValue: Array<ConditionalItemProps> = _.get(currentQuery, position);
+        console.log("pos", position);
+        console.log("ok", currentValue);
+
+
         currentValue = [...currentValue, {
             field: 'gender',
             operator: '=',
@@ -117,8 +121,16 @@ export default function ToolbarBuilder(props: any) {
         let newQuery = _.cloneDeep(currentQuery);
         _.unset(newQuery, position)
 
+        console.log("newQuery", newQuery);
+
+        const oke = _.filter(newQuery, (ele: any) => {
+            return ele.constructor === Object && Object.keys(ele).length > 0
+        })
+
+        console.log("oke", oke);
+
         // update recoil
-        setCurrentQuery(removeEmptyObjects(newQuery));
+        setCurrentQuery(removeEmptyArrayObject(newQuery));
     }, [currentQuery, position, setCurrentQuery])
 
     /**

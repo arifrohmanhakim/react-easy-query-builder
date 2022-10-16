@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import './App.css';
 import Builder from '../components/builder';
+import fields from '../assets/json/fields.json';
+
 function App() {
+
     const [query, setQuery] = useState({
         and: [
             {
@@ -49,16 +52,7 @@ function App() {
     });
     return (
         <div className="App">
-            <Builder query={query} fields={[{
-                key: 'email',
-                label: 'Email',
-                type: 'text'
-            }, {
-                key: 'gender',
-                label: 'Gender',
-                type: 'boolean',
-                default: 'Male'
-            }]} onChange={setQuery} options={{ showLabel: false }} />
+            <Builder query={query} fields={fields} onChange={setQuery} options={{ showLabel: false }} />
         </div>
     );
 }
