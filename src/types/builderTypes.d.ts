@@ -17,9 +17,16 @@ export interface OptionsProps {
   showLabel?: boolean;
 }
 
+export interface StylesProps {
+  andColor?: string;
+  orColor?: string;
+  textColor?: string;
+}
+
 export interface BuilderProps {
   fields: Array<FieldsProps>;
   query: any | null;
   onChange: (e: any) => void;
   options?: OptionsProps;
+  styles?: StylesProps;
 }

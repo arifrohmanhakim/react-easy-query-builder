@@ -52,7 +52,7 @@ function App() {
     });
     return (
         <div className="App">
-            <Builder query={query} fields={fields} onChange={setQuery} options={{ showLabel: false }} />
+            <Builder query={query} fields={fields} onChange={setQuery} options={{ showLabel: false }} styles={{ andColor: '#adece2', orColor: '#fff3d5', textColor: 'black' }} />
         </div>
     );
 }

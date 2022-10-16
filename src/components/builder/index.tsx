@@ -11,11 +11,8 @@ import { useRecoilState } from 'recoil';
 
 const { Content } = Layout;
 export default function Builder(props: BuilderProps) {
-    const { query, fields, options } = props;
+    const { query, fields, options, styles } = props;
     const [currentQuery, setCurrentQuery] = useRecoilState(recoilCurrentQuery);
-
-    console.log("currentQuery", currentQuery);
-
 
     useEffect(() => {
         setCurrentQuery(query)
@@ -35,7 +32,7 @@ export default function Builder(props: BuilderProps) {
                         <div style={{ marginTop: first ? 0 : 14 }} key={position}>
                             <Row align='stretch' justify='space-between' className={`parent-conditions ${first ? 'first' : ''}`}>
                                 <Col>
-                                    <ToolbarBuilder type={key} position={position} isFirst={first} />
+                                    <ToolbarBuilder type={key} position={position} isFirst={first} styles={styles} />
                                 </Col>
                                 <Col className={`wrap-item`}>
                                     {_.map(val, (item: ConditionalItemProps, index) => !_.isNil(item?.or) || !_.isNil(item?.and) ? conditional(item, false, `${position}[${index}]`) : (

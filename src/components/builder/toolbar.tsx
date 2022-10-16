@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { Space, Button, Typography, Tooltip, Popover, Menu } from 'antd';
 import { Plus, MoreHorizontal, Copy, Trash } from 'react-feather';
 import _ from 'lodash';
@@ -8,7 +8,7 @@ import { ConditionalItemProps } from '../../types/builderTypes';
 import { removeEmptyArrayObject } from '../../utils/helpers';
 
 export default function ToolbarBuilder(props: any) {
-    const { type, position, isFirst = false } = props;
+    const { type, position, isFirst = false, styles } = props;
     const [currentQuery, setCurrentQuery] = useRecoilState(recoilCurrentQuery);
 
     /**
@@ -42,10 +42,6 @@ export default function ToolbarBuilder(props: any) {
         if (_.isNil(currentQuery)) return;
         let newQuery = _.cloneDeep(currentQuery);
         let currentValue: Array<ConditionalItemProps> = _.get(currentQuery, position);
-        console.log("pos", position);
-        console.log("ok", currentValue);
-
-
         currentValue = [...currentValue, {
             field: 'gender',
             operator: '=',
@@ -121,14 +117,6 @@ export default function ToolbarBuilder(props: any) {
         let newQuery = _.cloneDeep(currentQuery);
         _.unset(newQuery, position)
 
-        console.log("newQuery", newQuery);
-
-        const oke = _.filter(newQuery, (ele: any) => {
-            return ele.constructor === Object && Object.keys(ele).length > 0
-        })
-
-        console.log("oke", oke);
-
         // update recoil
         setCurrentQuery(removeEmptyArrayObject(newQuery));
     }, [currentQuery, position, setCurrentQuery])
@@ -156,18 +144,35 @@ export default function ToolbarBuilder(props: any) {
                 <Menu.Item icon={<Trash size={18} />} danger onClick={onDeleteGroup}>Delete</Menu.Item>
             </Menu>
         )
-    }, [onDuplicate, isFirst]);
+    }, [isFirst, onDuplicate, onDeleteGroup]);
+
+    /**
+     * toolbar styles
+     */
+    const toolbarStyles = useCallback((resultType: string) => {
+        let result = {};
+        if (_.isNil(styles)) return result;
+        if (_.eq(resultType, 'background')) {
+            if (_.eq(type, 'and') && !_.isNil(styles?.andColor)) return { backgroundColor: styles?.andColor };
+            if (_.eq(type, 'or') && !_.isNil(styles?.orColor)) return { backgroundColor: styles?.orColor };
+        }
+
+        if (_.eq(resultType, 'text-color')) {
+            if (!_.isNil(styles?.textColor)) return { color: styles?.textColor }
+        }
+        return result;
+    }, [styles, type])
 
     return (
-        <Space direction='vertical' className={`conditions-toolbar ${type}`}>
+        <Space direction='vertical' className={`conditions-toolbar ${type}`} style={toolbarStyles('background')}>
             <Popover trigger={['click']} placement="right" content={moreContent} overlayClassName="popover-menu">
-                <Button icon={<MoreHorizontal />} type="text" size="small" />
+                <Button icon={<MoreHorizontal />} type="text" size="small" style={toolbarStyles('text-color')} />
             </Popover>
             <Tooltip title={`Click to Change Condition`} placement="right">
-                <Typography.Title level={5} onClick={onChangeCondition}>{_.toUpper(type)}</Typography.Title>
+                <Typography.Title level={5} onClick={onChangeCondition} style={toolbarStyles('text-color')}>{_.toUpper(type)}</Typography.Title>
             </Tooltip>
             <Popover trigger={['click']} placement="right" content={addContent} overlayClassName="popover-menu">
-                <Button icon={<Plus />} type="text" size="small" shape="circle" />
+                <Button icon={<Plus />} type="text" size="small" shape="circle" style={toolbarStyles('text-color')} />
             </Popover>
         </Space>
     )
