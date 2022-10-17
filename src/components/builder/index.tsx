@@ -29,15 +29,15 @@ export default function Builder(props: BuilderProps) {
                     position += first ? '' : '.'
                     position += `${key}`
                     return (
-                        <div className="conditions-group" style={{ marginTop: first ? 0 : 14 }
-                        } key={position} >
+                        <div key={position} className="conditions-group" style={{ marginTop: first ? 0 : 14 }
+                        }>
                             <Row align='stretch' justify='space-between' className={`parent-conditions ${first ? 'first' : ''}`}>
                                 <Col>
                                     <ToolbarBuilder type={key} position={position} isFirst={first} styles={styles} />
                                 </Col>
                                 <Col className={`wrap-item`}>
                                     {_.map(val, (item: ConditionalItemProps, index: any) => !_.isNil(item?.or) || !_.isNil(item?.and) ? conditional(item, false, `${position}[${index}]`) : (
-                                        <ItemBuilder item={item} fields={fields} options={options} styles={{ marginTop: !_.isNil(val[index - 1]?.or) || !_.isNil(val[index - 1]?.and) ? 14 : 0 }} />
+                                        <ItemBuilder key={`${position}[${index}]`} item={item} index={index} position={position} fields={fields} options={options} styles={{ marginTop: !_.isNil(val[index - 1]?.or) || !_.isNil(val[index - 1]?.and) ? 14 : 0 }} />
                                     ))}
                                 </Col>
                             </Row>
