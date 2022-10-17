@@ -1,5 +1,5 @@
-import { useCallback, useMemo } from 'react';
-import { Space, Button, Typography, Tooltip, Popover, Menu } from 'antd';
+import { useCallback } from 'react';
+import { Button, Typography, Tooltip, Popover, Menu } from 'antd';
 import { Plus, MoreHorizontal, Copy, Trash } from 'react-feather';
 import _ from 'lodash';
 import { currentQuery as recoilCurrentQuery } from '../../models/state';
@@ -164,16 +164,17 @@ export default function ToolbarBuilder(props: any) {
     }, [styles, type])
 
     return (
-        <Space direction='vertical' className={`conditions-toolbar ${type}`} style={toolbarStyles('background')}>
-            <Popover trigger={['click']} placement="right" content={moreContent} overlayClassName="popover-menu">
+        <div className={`conditions-toolbar ${type}`} style={toolbarStyles('background')}>
+            <div className='toolbar-item'><Popover trigger={['click']} placement="right" content={moreContent} overlayClassName="popover-menu">
                 <Button icon={<MoreHorizontal />} type="text" size="small" style={toolbarStyles('text-color')} />
-            </Popover>
+            </Popover></div>
             <Tooltip title={`Click to Change Condition`} placement="right">
-                <Typography.Title level={5} onClick={onChangeCondition} style={toolbarStyles('text-color')}>{_.toUpper(type)}</Typography.Title>
+                <div className='toolbar-item' onClick={onChangeCondition}>
+                    <Typography.Title level={5} style={toolbarStyles('text-color')}>{_.toUpper(type)}</Typography.Title></div>
             </Tooltip>
-            <Popover trigger={['click']} placement="right" content={addContent} overlayClassName="popover-menu">
+            <div className='toolbar-item'><Popover trigger={['click']} placement="right" content={addContent} overlayClassName="popover-menu">
                 <Button icon={<Plus />} type="text" size="small" shape="circle" style={toolbarStyles('text-color')} />
-            </Popover>
-        </Space>
+            </Popover></div>
+        </div>
     )
 }

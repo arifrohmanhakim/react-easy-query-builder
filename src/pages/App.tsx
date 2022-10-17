@@ -2,6 +2,7 @@ import { useState } from 'react';
 import './App.css';
 import Builder from '../components/builder';
 import fields from '../assets/json/fields.json';
+import { Col, Row, Typography } from 'antd';
 
 function App() {
 
@@ -33,6 +34,10 @@ function App() {
                                 value: 'male'
                             }
                         ]
+                    }, {
+                        field: 'gender',
+                        operator: '=',
+                        value: 'male'
                     }
                 ]
             }, {
@@ -52,7 +57,15 @@ function App() {
     });
     return (
         <div className="App">
-            <Builder query={query} fields={fields} onChange={setQuery} options={{ showLabel: false }} styles={{ andColor: '#adece2', orColor: '#fff3d5', textColor: 'black' }} />
+            <Row>
+                <Col span={6}>
+                    <Typography.Title level={4}>Options</Typography.Title>
+                </Col>
+                <Col span={18}>
+                    <Builder query={query} fields={fields} onChange={setQuery} options={{ showLabel: false }} styles={{ andColor: '#adece2', orColor: '#fff3d5', textColor: 'black' }} />
+                </Col>
+            </Row>
+
         </div>
     );
 }

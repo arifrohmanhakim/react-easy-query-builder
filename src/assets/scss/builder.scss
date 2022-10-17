@@ -42,6 +42,19 @@
   transition: all 0.5s ease-out;
   padding-top: 4px;
 
+  .toolbar-item {
+    &:nth-child(2) {
+      flex: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      h5 {
+        margin-bottom: 0;
+      }
+    }
+  }
+
   &.and {
     background-color: $primary-color;
   }

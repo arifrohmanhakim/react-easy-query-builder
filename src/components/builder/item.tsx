@@ -4,10 +4,10 @@ import { Copy, Trash, Menu } from 'react-feather';
 
 const { Option } = Select;
 export default function ItemBuilder(props: any) {
-    const { item, fields, options } = props;
+    const { item, fields, options, styles = {} } = props;
 
     return (
-        <div className="conditions-item">
+        <div className="conditions-item" style={styles}>
             <div className="container">
                 <div className='field actions'>
                     <Button type='text' icon={<Menu size={18} color="#ccc" />} className="btn-drag" />
