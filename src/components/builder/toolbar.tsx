@@ -18,18 +18,20 @@ export default function ToolbarBuilder(props: any) {
         if (_.isNil(currentQuery)) return;
 
         const currentValue = _.get(currentQuery, position);
+        const newType = _.eq(type, 'and') ? 'or' : 'and';
+        let newQuery = _.cloneDeep(currentQuery);
 
         // split string position to array by .
         let splitPositon = _.split(position, '.');
-        const lastIndex = _.size(splitPositon) - 1;
-
-        // delete last index
-        _.pullAt(splitPositon, lastIndex)
-        let newQuery = _.cloneDeep(currentQuery);
-
-        // set new value
-        const newType = _.eq(type, 'and') ? 'or' : 'and';
-        _.set(newQuery, _.join(splitPositon, '.'), { [newType]: currentValue })
+        if (_.gt(_.size(splitPositon), 1)) {
+            const lastIndex = _.size(splitPositon) - 1;
+            // delete last index
+            _.pullAt(splitPositon, lastIndex)
+            _.set(newQuery, _.join(splitPositon, '.'), { [newType]: currentValue })
+        } else {
+            // @ts-ignore
+            newQuery = { [newType]: currentValue }
+        }
 
         // update recoil
         setCurrentQuery(newQuery);
